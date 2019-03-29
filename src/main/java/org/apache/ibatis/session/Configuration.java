@@ -683,6 +683,9 @@ public class Configuration {
   }
 
   public void addMappedStatement(MappedStatement ms) {
+    // 这里会添加 MappedStatements 对象，需要连接到 StrictMap 查看代码详情, 一个 put 放了 2 个 value,
+    // StrictMap 不是公共类，是 Configuration 的一个成员变量类
+    // key 分别是带有 namespace 和不带 namespace 的
     mappedStatements.put(ms.getId(), ms);
   }
 
@@ -930,6 +933,7 @@ public class Configuration {
             + (conflictMessageProducer == null ? "" : conflictMessageProducer.apply(super.get(key), value)));
       }
       if (key.contains(".")) {
+        // 先获取不含 namespace 的 key 值，放入 map
         final String shortKey = getShortName(key);
         if (super.get(shortKey) == null) {
           super.put(shortKey, value);
@@ -937,6 +941,7 @@ public class Configuration {
           super.put(shortKey, (V) new Ambiguity(shortKey));
         }
       }
+      // 然后将包含 namespace 的 key 值，放入 map
       return super.put(key, value);
     }
 

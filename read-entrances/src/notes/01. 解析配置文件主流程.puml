@@ -1,0 +1,40 @@
+@startuml
+SqlSessionFactoryBuilder -> SqlSessionFactoryBuilder: build
+SqlSessionFactoryBuilder -> XMLConfigBuilder: new an object
+XMLConfigBuilder --> SqlSessionFactoryBuilder
+
+SqlSessionFactoryBuilder -> XMLConfigBuilder: parse()
+XMLConfigBuilder -> XMLConfigBuilder: private parseConfiguration()
+XMLConfigBuilder -> XMLConfigBuilder: private mapperElement()
+XMLConfigBuilder -> Resources: getResourceAsStream
+Resources --> XMLConfigBuilder: return inputStream
+
+XMLConfigBuilder -> XMLMapperBuilder: new a XMLMapperBuilder object, value to builderAssistant
+XMLMapperBuilder --> XMLConfigBuilder
+XMLConfigBuilder -> XMLMapperBuilder: parse()
+
+XMLMapperBuilder -> XMLMapperBuilder: 1 private configurationElement
+XMLMapperBuilder -> XMLMapperBuilder: 1.1 private buildStatementFromContext
+XMLMapperBuilder -> XMLMapperBuilder: 1.1.1 private buildStatementFromContext
+XMLMapperBuilder -> XMLStatementBuilder: new an Object
+XMLStatementBuilder --> XMLMapperBuilder: return an Object XMLStatementBuilder
+XMLMapperBuilder -> XMLStatementBuilder: parseStatementNode 解析 sql 语句
+XMLStatementBuilder -> MapperBuilderAssistant: addMappedStatement
+MapperBuilderAssistant -> MappedStatement: 利用构建者模式创建对象
+MappedStatement --> MapperBuilderAssistant: return MappedStatement
+MapperBuilderAssistant -> Configuration: addMappedStatement
+Configuration -> StrictMap: Configuration 的内部类 put
+StrictMap --> Configuration
+Configuration --> MapperBuilderAssistant
+MapperBuilderAssistant --> XMLStatementBuilder: return MappedStatement 对象
+XMLStatementBuilder --> XMLMapperBuilder: void
+
+
+XMLMapperBuilder -> XMLMapperBuilder: 2 private parsePendingResultMaps
+XMLMapperBuilder -> XMLMapperBuilder: 3 private parsePendingCacheRefs
+XMLMapperBuilder -> XMLMapperBuilder: 4 private parsePendingStatements
+
+XMLMapperBuilder --> XMLConfigBuilder: void
+XMLConfigBuilder --> SqlSessionFactoryBuilder: return Configuration
+
+@enduml
