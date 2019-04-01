@@ -40,6 +40,7 @@ public class XMLLanguageDriver implements LanguageDriver {
 
   @Override
   public SqlSource createSqlSource(Configuration configuration, XNode script, Class<?> parameterType) {
+    // 这里会初始化各种 handler，如 TrimHandler, IfHandler 即 MyBatis 自带的动态语句的一些标签
     XMLScriptBuilder builder = new XMLScriptBuilder(configuration, script, parameterType);
     return builder.parseScriptNode();
   }

@@ -47,7 +47,9 @@ public class TextSqlNode implements SqlNode {
 
   @Override
   public boolean apply(DynamicContext context) {
+    // context 下有个 bindings，其下有参数值
     GenericTokenParser parser = createParser(new BindingTokenParser(context, injectionFilter));
+    // parser.parse(text) 解析完成之后， ${} 就被真实的值所替换
     context.appendSql(parser.parse(text));
     return true;
   }

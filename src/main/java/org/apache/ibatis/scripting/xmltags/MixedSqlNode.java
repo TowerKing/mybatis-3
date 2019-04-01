@@ -29,6 +29,7 @@ public class MixedSqlNode implements SqlNode {
 
   @Override
   public boolean apply(DynamicContext context) {
+    // node 是 TextSqlNode, 也有可能是 StaticTextSqlNode, 也有扩能是 IfSqlNode 这完全取决于 xml 里面的 sql 是怎么写的
     contents.forEach(node -> node.apply(context));
     return true;
   }

@@ -8,11 +8,16 @@
     
     <resultMap id="BaseResultMap" type="io.github.towerking.domain.User">
         <result column="userid" property="userId" jdbcType="INTEGER" javaType="Integer" />
-        <result column="userName" property="username" jdbcType="VARCHAR" javaType="String" />
+        <result column="username" property="userName" jdbcType="VARCHAR" javaType="String" />
     </resultMap>
     
     <select id="selectUserNameByUserId" resultType="String">
         select username from user where userid = #{userId}
     </select>
+
+    <select id="selectUserByUserId" resultMap="BaseResultMap" parameterType="io.github.towerking.domain.User">
+        select username, ${userId} as userid from user where userid = #{userId}
+    </select>
+
     
 </mapper>

@@ -294,6 +294,8 @@ public final class MappedStatement {
   }
 
   public BoundSql getBoundSql(Object parameterObject) {
+    // 当 sql 语句不是动态语句的时候， 在加载配置文件时，就已经将语句处理为原始语句， 即 #{} 被替换为 ?, 此时 sqlSource 是 RawSqlSource
+    // 当 sql 语句是动态语句时，加载配置文件时 sql 语句不会被处理，此时 sqlSource 是 DynamicSqlSource, 然后在 getBoundSql 时进行解析
     BoundSql boundSql = sqlSource.getBoundSql(parameterObject);
     List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
     if (parameterMappings == null || parameterMappings.isEmpty()) {

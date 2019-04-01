@@ -1,5 +1,6 @@
 package io.github.towerking.main;
 
+import io.github.towerking.domain.User;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -25,6 +26,11 @@ public class Entrances {
         SqlSession session = sessionFactory.openSession();
         String userName = session.selectOne("selectUserNameByUserId", 2);
         System.out.println(userName);
+
+        User param = new User();
+        param.setUserId(2);
+        User user = session.selectOne("selectUserByUserId", param);
+        System.out.println(user);
         session.close();
     }
 }
