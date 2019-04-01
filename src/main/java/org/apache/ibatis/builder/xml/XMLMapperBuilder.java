@@ -91,8 +91,9 @@ public class XMLMapperBuilder extends BaseBuilder {
   }
 
   public void parse() {
-    // 判断当前资源文件是否已经在家，没有加载才继续
+    // 判断当前资源文件是否已经存在，没有加载才继续
     if (!configuration.isResourceLoaded(resource)) {
+      // 解析 Mapper 文件
       configurationElement(parser.evalNode("/mapper"));
       configuration.addLoadedResource(resource);
       bindMapperForNamespace();
@@ -224,6 +225,7 @@ public class XMLMapperBuilder extends BaseBuilder {
     for (XNode parameterMapNode : list) {
       String id = parameterMapNode.getStringAttribute("id");
       String type = parameterMapNode.getStringAttribute("type");
+      // 获取参数映射的类类型，例如自定义的 POJO 对象
       Class<?> parameterClass = resolveClass(type);
       List<XNode> parameterNodes = parameterMapNode.evalNodes("parameter");
       List<ParameterMapping> parameterMappings = new ArrayList<>();
@@ -235,10 +237,15 @@ public class XMLMapperBuilder extends BaseBuilder {
         String mode = parameterNode.getStringAttribute("mode");
         String typeHandler = parameterNode.getStringAttribute("typeHandler");
         Integer numericScale = parameterNode.getIntAttribute("numericScale");
+        // 输入，输出或者输入输出
         ParameterMode modeEnum = resolveParameterMode(mode);
+        // 获取 Java 类型，实现方式并不是直接使用反射，而是先有一个类型的 Map 对象
+        // 根据 key 值获取对应的 Java 类型，如果有则直接返回，没有才利用反射获取。
         Class<?> javaTypeClass = resolveClass(javaType);
         JdbcType jdbcTypeEnum = resolveJdbcType(jdbcType);
+        // typeHandler 直接走的反射，应该是考虑到这可能是个自定义类。
         Class<? extends TypeHandler<?>> typeHandlerClass = resolveClass(typeHandler);
+        // buildParameterMapping 使用构建者模式创建 ParameterMapping 对象
         ParameterMapping parameterMapping = builderAssistant.buildParameterMapping(parameterClass, property, javaTypeClass, jdbcTypeEnum, resultMap, modeEnum, typeHandlerClass, numericScale);
         parameterMappings.add(parameterMapping);
       }
@@ -262,10 +269,13 @@ public class XMLMapperBuilder extends BaseBuilder {
 
   private ResultMap resultMapElement(XNode resultMapNode, List<ResultMapping> additionalResultMappings, Class<?> enclosingType) throws Exception {
     ErrorContext.instance().activity("processing " + resultMapNode.getValueBasedIdentifier());
+    // 这里很奇怪， MyBatis 的 resultMap 节点上配置信息也只有一个 type 类型可以配置，其他的 ofType, resultType, javaType 并不需要配置
+    // 为什么要这么去获取 type 类型呢？
     String type = resultMapNode.getStringAttribute("type",
         resultMapNode.getStringAttribute("ofType",
             resultMapNode.getStringAttribute("resultType",
                 resultMapNode.getStringAttribute("javaType"))));
+    // 获取 POJO 对象
     Class<?> typeClass = resolveClass(type);
     if (typeClass == null) {
       typeClass = inheritEnclosingType(resultMapNode, enclosingType);
@@ -284,6 +294,7 @@ public class XMLMapperBuilder extends BaseBuilder {
         if ("id".equals(resultChild.getName())) {
           flags.add(ResultFlag.ID);
         }
+        // buildResultMappingFromContext 创建结果集映射
         resultMappings.add(buildResultMappingFromContext(resultChild, typeClass, flags));
       }
     }
@@ -387,6 +398,7 @@ public class XMLMapperBuilder extends BaseBuilder {
     } else {
       property = context.getStringAttribute("property");
     }
+    // 这里有好几个映射都没有用过，常用都也就是 column, javaType, jdbcType，其他都没有用过，在 idea 编辑时也没有提醒输入。
     String column = context.getStringAttribute("column");
     String javaType = context.getStringAttribute("javaType");
     String jdbcType = context.getStringAttribute("jdbcType");

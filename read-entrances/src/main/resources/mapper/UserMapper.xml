@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="io.github.towerking.mapper.UserMapper">
+
+    <parameterMap id="test" type="String">
+        <parameter property="id" jdbcType="VARCHAR" javaType="String" typeHandler="org.apache.ibatis.type.StringTypeHandler" />
+    </parameterMap>
+    
+    <resultMap id="BaseResultMap" type="io.github.towerking.domain.User">
+        <result column="userid" property="userId" jdbcType="INTEGER" javaType="Integer" />
+        <result column="userName" property="username" jdbcType="VARCHAR" javaType="String" />
+    </resultMap>
     
     <select id="selectUserNameByUserId" resultType="String">
         select username from user where userid = #{userId}

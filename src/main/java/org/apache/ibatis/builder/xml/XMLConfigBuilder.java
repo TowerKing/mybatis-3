@@ -365,7 +365,7 @@ public class XMLConfigBuilder extends BaseBuilder {
     if (parent != null) {
       for (XNode child : parent.getChildren()) {
         // 参考官方文档 http://www.mybatis.org/mybatis-3/zh/configuration.html#mappers
-        // 这个自己平时不怎么用，先略过，自己看 else 分支信息
+        // 这个自己平时不怎么用，先略过，直接看 else 分支信息
         if ("package".equals(child.getName())) {
           String mapperPackage = child.getStringAttribute("name");
           configuration.addMappers(mapperPackage);
