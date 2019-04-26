@@ -26,14 +26,14 @@ public class MySQLDemo {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         // simpleQuery();
 
-        /*System.out.println(updateWebSites(1, "GOOGLE"));
-        paramQuery(1);*/
+        // System.out.println(updateWebSites(1, "GOOGLE"));
+        paramQuery(1);
 
         /*int id = insertWebSites("BAIDU", "http://www.baidu.com", 5200, "CN");
         System.out.println(id);
         paramQuery(id);*/
 
-        System.out.println(deleteWebSites("BAIDU"));
+        // System.out.println(deleteWebSites("BAIDU"));
     }
 
     private static void simpleQuery() throws ClassNotFoundException, SQLException {
@@ -61,7 +61,8 @@ public class MySQLDemo {
         String sql = "select id, `name`, url, alexa, country from websites where id = ?";
         preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setInt(1, id);
-        ResultSet resultSet = preparedStatement.executeQuery();
+        preparedStatement.execute();
+        ResultSet resultSet = preparedStatement.getResultSet();
         outputResult(resultSet);
         preparedStatement.close();
         connection.close();
